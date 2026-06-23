@@ -215,7 +215,7 @@ async def scrape_cpu(browser, cpu_id, cpu_name, delay=DELAY_BETWEEN_QUERIES):
                     direction=direction,
                 )
                 page = await browser.get(url)
-                await asyncio.sleep(4)  # Wait for page + Cloudflare
+                await asyncio.sleep(5)  # Wait for page + Cloudflare
 
                 # Verify page loaded
                 title = await page.evaluate('document.title')
@@ -243,6 +243,20 @@ async def scrape_cpu(browser, cpu_id, cpu_name, delay=DELAY_BETWEEN_QUERIES):
                 break  # Success, exit retry loop
 
             except Exception as e:
+                err_str = str(e).lower()
+                if 'close frame' in err_str or 'connection' in err_str:
+                    # CDP connection issue — try navigating to a fresh page
+                    if attempt < 2:
+                        print(f"    (CDP error on {field}, retry {attempt+1} with fresh page...)")
+                        try:
+                            await browser.get('https://browser.geekbench.com/')
+                            await asyncio.sleep(5)
+                        except:
+                            pass
+                        continue
+                    else:
+                        result['error'] = f'{field}: CDP connection lost after retries'
+                        return result
                 if attempt < 2:
                     print(f"    (Error on {field}: {e}, retry {attempt+1}...)")
                     await asyncio.sleep(5)
@@ -273,7 +287,7 @@ async def run_scraper(args):
     # Launch browser
     print("Launching Chrome...")
     browser = await uc.start(
-        headless=True,
+        headless=False,
         browser_executable_path='/usr/bin/vivaldi',
         browser_args=['--no-first-run', '--no-default-browser-check', '--disable-gpu', '--disable-dev-shm-usage'],
     )
