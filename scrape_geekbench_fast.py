@@ -25,8 +25,8 @@ DB_PATH = os.path.join(BASE_DIR, "benchmarks.sqlite")
 
 SEARCH_URL = "https://browser.geekbench.com/v6/cpu/search?q={query}&sort={sort}&dir={direction}"
 
-DELAY_BETWEEN_QUERIES = 1.5
-DELAY_BETWEEN_CPUS = 2.0
+DELAY_BETWEEN_QUERIES = 2.5
+DELAY_BETWEEN_CPUS = 3.5
 
 
 def init_schema(conn):
@@ -307,6 +307,9 @@ def main():
             cookies_data = get_cookies_with_browser()
             session = make_session(cookies_data)
             requests_since_refresh = 0
+            # Warm-up: make a test request to establish trust
+            session.get('https://browser.geekbench.com/v6/cpu/search?q=i7-13700K&sort=score&dir=desc')
+            time.sleep(3)
             print(f"... Got {len(cookies_data)} new cookies, continuing ...\n")
 
         query = sanitize_query(cpu_name)
