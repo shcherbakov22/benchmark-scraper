@@ -23,3 +23,4 @@ geekbench_search_results.json
 clean_all_cpus.tsv
 benchmarks.sqlite
 geekbench_search_results*.json
+geekbench_mode_results*.json
