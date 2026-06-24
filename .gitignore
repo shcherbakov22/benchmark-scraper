@@ -4,3 +4,16 @@ __pycache__/
 node_modules/
 package.json
 package-lock.json
+
+# SQLite WAL/SHM files
+*.sqlite-shm
+*.sqlite-wal
+
+# Intermediate JSON (loaded into DB)
+vray_leaderboard.json
+geekbench_leaderboard.json
+gb_cookies.json
+geekbench_search_results.json
+
+# TSV exports
+clean_all_cpus.tsv
