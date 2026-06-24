@@ -5,6 +5,10 @@ node_modules/
 package.json
 package-lock.json
 
+# Session/cookie files
+gb_session.json
+gb_cookie_string.txt
+
 # SQLite WAL/SHM files
 *.sqlite-shm
 *.sqlite-wal
